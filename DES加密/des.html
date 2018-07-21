@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<link rel="icon" href="ico.ico">
+	<title>前端md5加密</title>
+    
+</head>
+<body>
+	
+	
+	
+	
+	
+</body>
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script src="js/core.js"></script>
+<script src="js/cipher-core.js"></script>
+<script src="js/tripledes.js"></script>
+<script src="js/mode-ecb.js"></script>
+<script>
+	var thisl = {
+		lng : "114.0690720000",
+        lat : "22.6662030000",
+        distance: "10"
+	}
+
+	//加密的私钥(这个要跟后台进行沟通，确认前后端密钥相同)
+	var key = 'HL1HBF6lLND721';
+	//将json转为字符串
+	var aToStr=JSON.stringify(thisl);
+	//对aTostr进行加密
+    var str1 = encryptByDES(aToStr,key);
+    
+   //对str1进行解密
+    var str2 = decryptByDESModeEBC(str1,key);
+ 
+    //将str1转为字符串传给后台
+    var num = str1.toString();
+  	console.log(num)   //  控制台去看
+  	
+  	//将str2解密的字符串转为json
+  	var str2_a = JSON.parse(str2);
+  	console.log(str2)  //  控制台去看
+  	
+  	
+  	var a = '我的博客';
+  	//对a进行加密
+    var script_a = encryptByDES(a,key);
+  	console.log(script_a);    //  控制台去看
+  	//script_a解密
+    var decrypt = decryptByDESModeEBC(script_a,key);
+  	console.log(decrypt) //我的博客
+  	
+  	
+  function encryptByDES(message,key) {
+        //把私钥转换成16进制的字符串
+        var keyHex = CryptoJS.enc.Utf8.parse(key);
+        //模式为ECB padding为Pkcs7
+        var encrypted = CryptoJS.DES.encrypt(message, keyHex, {
+            mode: CryptoJS.mode.ECB,
+            padding: CryptoJS.pad.Pkcs7
+        });
+        //加密出来是一个16进制的字符串
+        return encrypted.ciphertext.toString();
+   }
+    //DES  ECB模式解密
+    function decryptByDESModeEBC(ciphertext,key) {
+        //把私钥转换成16进制的字符串
+        var keyHex = CryptoJS.enc.Utf8.parse(key);
+        //把需要解密的数据从16进制字符串转换成字符byte数组
+        var decrypted = CryptoJS.DES.decrypt({
+            ciphertext: CryptoJS.enc.Hex.parse(ciphertext)
+        }, keyHex, {
+            mode: CryptoJS.mode.ECB,
+            padding: CryptoJS.pad.Pkcs7
+        });
+        //以utf-8的形式输出解密过后内容
+        var result_value = decrypted.toString(CryptoJS.enc.Utf8);
+        return result_value;
+    }
+</script>
+
+
+</html>
